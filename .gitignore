@@ -1,0 +1,16 @@
+# Raw Kaggle download and the poster images. Only the frozen corpus is tracked.
+data/*
+!data/*.csv.gz
+
+# Generated on each run.
+artifacts/
+figures/
+
+# The report ships as report.pdf at the root.
+latex/
+
+# Original submission material, kept locally.
+archive/
+
+__pycache__/
+*.pyc
