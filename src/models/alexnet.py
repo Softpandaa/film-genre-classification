@@ -1,4 +1,4 @@
-"""AlexNet with a multilabel head, section 4.2."""
+"""AlexNet with a multilabel head, Section 4.2."""
 
 import torch.nn as nn
 from torch import optim

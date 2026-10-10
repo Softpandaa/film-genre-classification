@@ -1,8 +1,4 @@
-"""Country to region mapping used by the data section and by Section 4.1.
-
-Taken verbatim from the original CNN_vgg_analysis_region_language notebook, so
-that the regional figures and the regional F1 table rest on the same grouping.
-"""
+"""Country to region mapping of Figure 2, the grouping behind Table 5."""
 
 REGION = {
     'Afghanistan': 'Asia',

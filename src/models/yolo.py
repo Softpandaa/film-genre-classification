@@ -1,10 +1,4 @@
-"""YOLOv8 classification, section 4.3.
-
-Two approaches. Multi-label copies a poster into one folder per genre it
-carries. Multi-class gives each movie its single genre. Both build their folder
-dataset from the train and test halves of the shared split, so the validation
-folder is the evaluation set.
-"""
+"""YOLOv8 classification of Section 4.3, under the multi-label and multi-class approaches."""
 
 import os
 import shutil
@@ -18,7 +12,7 @@ from data_io import load_encoded_genres, genre_names, split_indices
 
 
 def build_folders(root: str, multi_label: bool = True) -> str:
-    """Lay posters out as <root>/<split>/<genre>/<movie_id>.jpg."""
+    """Lay posters out as <root>/<train or val>/<genre>/<movie_id>.jpg over the shared split."""
     table = load_encoded_genres().reset_index()
     names = genre_names(table.columns[1:-1])
     train_indices, _ = split_indices(len(table))

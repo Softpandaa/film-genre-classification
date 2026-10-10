@@ -11,6 +11,9 @@ We found that the classifier draws on the whole poster rather than its center, t
     data/        the frozen dataset, and the Kaggle download when present
     src/         config.py, the shared modules, models/ one file per family
     report.pdf   
+    slides.pdf
+
+The report and slides are distributed as compiled PDFs. Their typesetting source is not included.
 
 ## Data
 

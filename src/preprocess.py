@@ -1,11 +1,4 @@
-"""How the frozen tables in data/ were built, and a check that they are intact.
-
-The four tables named in config are the corpus of record. Kaggle has revised
-the Letterboxd dataset since the project ran, so these builders no longer
-reproduce them, and they refuse to overwrite an existing file for that reason.
-They are kept because they document the construction, and because verify_corpus
-is what catches a table that has drifted.
-"""
+"""How the frozen tables in data/ were built (Section 2), and a check that they are intact."""
 
 import hashlib
 import os
@@ -19,8 +12,7 @@ from data_io import get_poster
 
 
 def _guard(path: str, overwrite: bool) -> None:
-    """Refuse to replace a frozen table unless asked explicitly. Checked first,
-    before any of the raw tables are read."""
+    """Refuse to replace a frozen table unless overwrite is set; called before any read."""
     if os.path.exists(path) and not overwrite:
         raise FileExistsError(
             f"{path} is part of the frozen corpus. Rebuilding from the current "
@@ -76,11 +68,7 @@ def build_valid_movies(overwrite: bool = False) -> pd.Series:
 
 
 def build_encoded_genres(overwrite: bool = False) -> pd.DataFrame:
-    """One-hot genre table over valid movies, outliers in genre count removed.
-
-    A movie is an outlier when its genre count exceeds the mean plus three
-    standard deviations, which leaves at most four genres per movie.
-    """
+    """One-hot genres of the valid movies with genre count below mean + 3 sd (Section 2)."""
     _guard(config.ENCODED_GENRES_CSV, overwrite)
     genres = pd.read_csv(config.GENRES_CSV, index_col=0)
     counts = genres.groupby(config.ID).count()
@@ -117,14 +105,7 @@ def sample_decade_posters(decades=("1950s", "1960s", "1970s", "1980s", "1990s",
                                    "2000s", "2010s", "2020s"),
                           n: int = 10, seed: int = 4563, country: str = "Hong Kong",
                           min_rating: float = 3.0) -> dict:
-    """Sample posters per decade for the appendix figures.
-
-    The pool is Hong Kong releases, and from 1980 onward only those rated at or
-    above min_rating. The notebook this came from had only the 2010s left in
-    its decade list when it was saved, and sampled five, while the committed
-    figures show ten per decade, so n follows the figures rather than the
-    notebook and only the 2010s ids are verified against them.
-    """
+    """n posters per decade for Figures 20 to 27; only the 2010s strip was checked against them."""
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt

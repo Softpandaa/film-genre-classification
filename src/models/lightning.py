@@ -1,8 +1,4 @@
-"""The Lightning wrapper and the training loop shared by AlexNet and the ResNets.
-
-Kept as the project ran it: a Sigmoid head with BCELoss over the nineteen
-genres, Adam, five epochs, batch 32.
-"""
+"""The Lightning wrapper and the training loop shared by AlexNet and the ResNets."""
 
 import os
 
@@ -18,7 +14,7 @@ from dataset import PosterDataset, get_datasets
 
 
 class PretrainedModel(L.LightningModule):
-    """A frozen-body backbone with a trainable multilabel head."""
+    """Pretrained model minus its last child module, with a multilabel head; all weights train."""
 
     def __init__(self, pre_trained_model, last_layer_classifier, num_labels: int,
                  loss_fn=nn.BCELoss, optimizer=optim.Adam, **optimizer_params):

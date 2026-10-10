@@ -1,4 +1,4 @@
-"""The poster dataset and the split shared by every PyTorch model."""
+"""The poster dataset and shared split of AlexNet and the ResNets."""
 
 import numpy as np
 import pandas as pd

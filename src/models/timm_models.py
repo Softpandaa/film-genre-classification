@@ -1,14 +1,4 @@
-"""EfficientNetV2 and Fast-ViT fine-tuning, section 5.
-
-Ported as these notebooks ran, with two properties worth knowing before the
-numbers are read. Both loaders wrap the whole frame: the notebooks computed a
-train and test split and never passed it to the datasets, so the reported
-metrics are measured on the rows the model trained on. And the training loop
-applies a softmax before CrossEntropyLoss, which applies log-softmax again.
-
-The population is read from encoded_genres.csv rather than rebuilt from the raw
-Kaggle tables, so the rows line up with evaluate.py.
-"""
+"""EfficientNetV2 and Fast-ViT fine-tuning of Section 5.4."""
 
 import os
 
@@ -28,7 +18,7 @@ import config
 
 
 def population() -> pd.DataFrame:
-    """Single-genre movies with their label, release year and table row."""
+    """Dated single-genre movies with label, release year and their row in encoded_genres."""
     table = pd.read_csv(config.ENCODED_GENRES_CSV)
     one_hot = table.iloc[:, 1:-1].to_numpy(bool)
     dates = pd.read_csv(config.MOVIES_CSV, index_col=0)[config.DATE]
@@ -65,7 +55,7 @@ class PosterFrameDataset(Dataset):
 
 
 class EfficientNetWithYear(nn.Module):
-    """EfficientNetV2-S with a frozen body and an optional year embedding."""
+    """EfficientNetV2-S, frozen body, head of equation (6) and an optional year embedding."""
 
     def __init__(self, num_classes: int, num_years: int = 0):
         super().__init__()
@@ -104,15 +94,7 @@ def build_fastvit(num_classes: int):
 
 
 def loaders(frame: pd.DataFrame, batch_size: int):
-    """Train and validation loaders, both over the whole frame.
-
-    This is what the notebooks built. They also computed
-
-        train_idx, val_idx = train_test_split(frame.index, 0.2, random_state=42)
-
-    and then passed the unsplit frame to both datasets, so the split had no
-    effect. Kept as it ran.
-    """
+    """Train and validation loaders, both on the whole frame (Section 5.5), and the year count."""
     years = {year: code for code, year in enumerate(sorted(frame[config.DATE].unique()))}
     return (DataLoader(PosterFrameDataset(frame, years), batch_size=batch_size,
                        shuffle=True, num_workers=4),
@@ -123,7 +105,7 @@ def loaders(frame: pd.DataFrame, batch_size: int):
 
 def train(model, train_loader, epochs: int, device: str = None,
           parameters=None) -> nn.Module:
-    """Fine-tune the head. The softmax before the criterion is the notebooks'."""
+    """Fine-tune the head, with a softmax before CrossEntropyLoss as the notebooks ran it."""
     device = device or ("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
     optimizer = torch.optim.Adam(parameters or model.parameters(), lr=config.TIMM_LR)

@@ -1,8 +1,4 @@
-"""CLIP zero-shot and fine-tuning, section 5.
-
-Zero-shot only. The notebooks also fine-tuned CLIP, but no figure in the
-report comes from that run, so it is not carried here.
-"""
+"""CLIP zero-shot classification of Section 5.1, equation (4)."""
 
 import os
 
@@ -23,7 +19,7 @@ def prompts(genres: list):
 
 
 def zero_shot(backbone: str, genres: list = None, device: str = None) -> np.ndarray:
-    """Score every single-genre movie by image and text similarity."""
+    """Score every dated single-genre movie by image and text similarity."""
     device = device or ("cuda" if torch.cuda.is_available() else "cpu")
     model, preprocess = clip.load(backbone, device=device)
     table = load_encoded_genres()

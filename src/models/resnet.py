@@ -1,4 +1,4 @@
-"""ResNet-18 and ResNet-50 with a multilabel head, section 4.2."""
+"""ResNet-18 and ResNet-50 with a multilabel head, Section 4.2."""
 
 import torch.nn as nn
 from torch import optim

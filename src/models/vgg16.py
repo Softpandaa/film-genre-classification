@@ -1,10 +1,4 @@
-"""VGG16 transfer learning, section 4.1.
-
-Three genres, balanced, restricted to the release window in config.VGG16_YEARS,
-with the genre count taken within the three rather than over all nineteen. The
-sample is drawn as the notebook drew it, so a movie can be picked twice and the
-train and test split below is made afterwards over those draws.
-"""
+"""VGG16 transfer learning of Section 4.1, on a balanced three-genre sample."""
 
 import numpy as np
 import pandas as pd
@@ -36,12 +30,7 @@ def load_sample(genres: list = None, years: tuple = config.VGG16_YEARS,
                 strict: bool = False,
                 n_per_genre: int = config.VGG16_SAMPLES_PER_GENRE,
                 seed: int = config.VGG16_SEED):
-    """Balanced posters and labels over the whole corpus.
-
-    The release date is merged on the movie id. The notebook took it by row
-    position, `movie_year.iloc[i - 1000001]`, which assumes the ids run
-    contiguously from 1000001 in row order.
-    """
+    """Balanced posters and labels over the whole corpus, release date merged on movie id."""
     genres = genres or config.THREE_GENRES_TRANSFER
     rows = single_label_rows(genres=genres, strict=strict)
     if years is not None:
@@ -69,12 +58,10 @@ def run(genres: list = None, years: tuple = config.VGG16_YEARS,
     return model, (x_test, y_test)
 
 
-# ---------------------------------------------------------------------------
-# Model inspection, section 4.1. Each returns a transformed copy of x_test.
-# ---------------------------------------------------------------------------
+# Inspection transforms of Section 4.1.3 (Table 4).
 
 def monocolour(x_test: np.ndarray) -> np.ndarray:
-    """Collapse to grey by averaging the channels."""
+    """Collapse to gray by averaging the channels."""
     grey = x_test.mean(axis=3)
     return np.repeat(grey[..., None], 3, axis=3)
 

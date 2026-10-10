@@ -8,8 +8,8 @@
     python src/run.py torchvision         section 4.2, AlexNet and both ResNets
     python src/run.py yolo                section 4.3, both approaches
     python src/run.py timm                section 5, EfficientNetV2 and Fast-ViT
-    python src/run.py clip                section 5, zero shot and fine tuning
-    python src/run.py tables              the two comparison tables of section 6
+    python src/run.py clip                section 5.1, the four zero-shot encoders
+    python src/run.py tables              Tables 17, 18 (AlexNet, ResNet, YOLOv8 rows) and 20
 
 Each command imports only what it needs, so a command runs even when the
 frameworks of the other sections are not installed.
@@ -28,7 +28,7 @@ def verify():
 
 
 def eda():
-    """Section 2. The poster size table and the five figures."""
+    """Section 2: Table 19 and the five panels of Figures 1 to 3."""
     import eda as section_two
     print(section_two.poster_size_table().to_string())
     for path in section_two.figures():
@@ -36,14 +36,14 @@ def eda():
 
 
 def posters():
-    """The decade poster strips of the appendix. Needs the poster images."""
+    """The decade poster strips of Figures 20 to 27. Needs the poster images."""
     from preprocess import sample_decade_posters
     for decade, ids in sample_decade_posters().items():
         print(decade, ids)
 
 
 def cnn():
-    """The three genre combinations of section 3, each under two windows."""
+    """Table 1: the three genre triples of Section 3, each under two release windows."""
     from models import cnn as model
     from sklearn.metrics import roc_auc_score, f1_score, precision_score
     import numpy as np
@@ -67,7 +67,7 @@ def cnn():
 
 
 def vgg16():
-    """Section 4.1, the classifier and the three inspection tests."""
+    """Section 4.1: the classifier and the three inspection tests of Table 4."""
     from models import vgg16 as model
     fitted, (x_test, y_test) = model.run()
     os.makedirs(config.ARTIFACT_DIR, exist_ok=True)
@@ -76,11 +76,8 @@ def vgg16():
 
 
 def torchvision_models():
-    """Section 4.2. Each model writes a prediction array for run.py tables.
-
-    The optimiser comparison of that section is the same three builders called
-    with optimizer=torch.optim.SGD and lr=config.SGD_LR.
-    """
+    """Section 4.2: each model writes a prediction array for run.py tables."""
+    # Figure 9's SGD runs call these builders with optimizer=torch.optim.SGD, lr=config.SGD_LR.
     from models import alexnet, resnet
     from models.lightning import train, predict_all
     for name, build in (("alexnet", alexnet.build),
@@ -90,7 +87,7 @@ def torchvision_models():
 
 
 def yolo():
-    """Section 4.3, both label conventions."""
+    """Section 4.3: both label conventions."""
     from models import yolo as model
     for name, root, settings, multi_label in (
             ("yolo_multilabel", config.YOLO_DATASET_DIR,
@@ -102,7 +99,7 @@ def yolo():
 
 
 def timm_models():
-    """Section 5, EfficientNetV2 and Fast-ViT, with and without the year."""
+    """Section 5: EfficientNetV2 and Fast-ViT, without the year embedding (num_years=0)."""
     from models import timm_models as model
     frame = model.population()
     for name, builder, batch in (
@@ -119,7 +116,7 @@ def timm_models():
 
 
 def clip_models():
-    """Section 5, the four zero-shot encoders."""
+    """Section 5.1: the four zero-shot encoders."""
     from models import clip as model
     from data_io import genre_names, load_encoded_genres
     names = genre_names(load_encoded_genres().columns[:-1])
@@ -129,9 +126,10 @@ def clip_models():
 
 
 def tables():
-    """Section 6. Reads whatever prediction arrays are present."""
+    """Rows of Tables 17 and 18, and Table 20, from whatever prediction arrays are present."""
     import pandas as pd
-    from evaluate import load_predictions, metrics
+    from data_io import split_indices
+    from evaluate import auroc_by_genre, load_predictions, metrics
 
     settings = {
         "alexnet":         dict(average="macro", auroc_on="label", in_test=True),
@@ -155,8 +153,6 @@ def tables():
               else "  no prediction arrays found in " + config.ARTIFACT_DIR)
 
     print("\nAUROC by genre, test half")
-    from data_io import split_indices
-    from evaluate import auroc_by_genre
     columns = {}
     for name in ("alexnet", "resnet18", "resnet50"):
         path = os.path.join(config.ARTIFACT_DIR, f"{name}_predictions.npz")

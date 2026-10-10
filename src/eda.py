@@ -1,8 +1,4 @@
-"""The tables and figures of the data section.
-
-Reads the frozen corpus and the raw Letterboxd tables and writes the five
-figures the report shows. Needs pandas and matplotlib only.
-"""
+"""Section 2: Table 19 and the five panels of Figures 1 to 3; needs pandas and matplotlib only."""
 
 import os
 
@@ -28,7 +24,7 @@ WHEEL = ["#0072B2", "#E69F00", "#009E73", "#CC79A7", "#56B4E9", "#D55E00",
 
 
 def _shade(color: str, factor: float) -> tuple:
-    """Lighten a hex colour towards white by factor in [0, 1]."""
+    """Lighten a hex color toward white by factor in [0, 1]."""
     rgb = tuple(int(color[k:k + 2], 16) / 255 for k in (1, 3, 5))
     return tuple(c + (1 - c) * factor for c in rgb)
 
@@ -50,27 +46,6 @@ def _write(fig, name: str) -> str:
     fig.savefig(path, bbox_inches="tight")
     plt.close(fig)
     return path
-
-
-def _hbar(labels, values, xlabel, name, figsize, size=13, label_size=11):
-    _style(size)
-    fig, ax = plt.subplots(figsize=figsize)
-    y = range(len(labels))
-    ax.barh(list(y), values, color=BLUE, height=0.7)
-    ax.set_yticks(list(y))
-    ax.set_yticklabels(labels)
-    ax.invert_yaxis()
-    ax.set_xlabel(xlabel)
-    ax.set_xlim(0, max(values) * 1.18)
-    for spine in ("top", "right"):
-        ax.spines[spine].set_visible(False)
-    ax.grid(axis="x", color=GREY, linewidth=0.6, alpha=0.7)
-    ax.set_axisbelow(True)
-    for position, value in zip(y, values):
-        ax.text(value + max(values) * 0.015, position, f"{value:.1f}",
-                va="center", fontsize=label_size)
-    fig.tight_layout()
-    return _write(fig, name)
 
 
 def _vbar(labels, values, xlabel, ylabel, name, figsize, size=13, label_size=11,
@@ -107,7 +82,7 @@ def corpus_ids() -> set:
 
 
 def poster_size_table() -> pd.DataFrame:
-    """Poster shapes by share of the corpus. Shapes under ten movies are pooled."""
+    """Table 19: poster shapes by share of the corpus, shapes under 10 movies pooled."""
     sizes = pd.read_csv(config.POSTER_SIZES_CSV, index_col=0)
     counts = sizes.groupby(config.SIZE).count()
     total = counts.sum().values
@@ -119,7 +94,7 @@ def poster_size_table() -> pd.DataFrame:
 
 
 def genre_shares() -> pd.Series:
-    """Share of the corpus carrying each genre. A movie may carry several."""
+    """Share of the corpus carrying each genre (Figure 1, left); a movie may carry several."""
     encoded = pd.read_csv(config.ENCODED_GENRES_CSV, index_col=0)
     one_hot = encoded.drop(columns=[config.GENRE_COUNT])
     shares = one_hot.sum() / len(encoded) * 100
@@ -128,18 +103,14 @@ def genre_shares() -> pd.Series:
 
 
 def genre_count_shares() -> pd.Series:
-    """Share of the corpus by number of genres carried."""
+    """Share of the corpus by number of genres carried (Figure 1, right)."""
     encoded = pd.read_csv(config.ENCODED_GENRES_CSV,
                           usecols=[config.GENRE_COUNT])
     return encoded[config.GENRE_COUNT].value_counts(normalize=True).sort_index() * 100
 
 
 def region_country_shares(min_country_share: float = 1.0):
-    """Shares of country entries by region, and by country within each region.
-
-    Countries below min_country_share per cent of the corpus are pooled into an
-    unlabelled remainder inside their own region, so the outer ring stays legible.
-    """
+    """Shares of country entries by region and by country; small countries pool per region."""
     countries = pd.read_csv(config.COUNTRIES_CSV)
     countries = countries[countries[config.ID].isin(corpus_ids())].copy()
     countries["region"] = countries[config.COUNTRY].map(regions.REGION)
@@ -163,12 +134,7 @@ def region_country_shares(min_country_share: float = 1.0):
 
 
 def language_shares(min_share: float = 1.0) -> pd.Series:
-    """Share of language entries by language, over the corpus.
-
-    Both row types are pooled, as the original analysis pooled them, so a movie
-    contributes one entry per language it lists. Languages below min_share per
-    cent are collected into Others.
-    """
+    """Shares of language entries over both row types; those below min_share go to Others."""
     languages = pd.read_csv(config.LANGUAGES_CSV)
     languages = languages[languages[config.ID].isin(corpus_ids())
                           & languages["type"].isin(config.LANGUAGE_TYPES)]
@@ -190,12 +156,7 @@ def release_decades() -> pd.Series:
 
 def _sunburst(inner: pd.Series, outer: pd.DataFrame, name: str,
               label_floor: float = 2.0) -> str:
-    """Region disc inside, country ring outside, one hue per region.
-
-    Regions below label_floor are merged into one unlabeled gray wedge so that
-    the shares printed stay the corpus shares and nothing is labeled outside
-    the circle.
-    """
+    """Region disc inside, country ring outside; regions below label_floor share a gray wedge."""
     _style(11)
     fig, ax = plt.subplots(figsize=(3.6, 3.6))
 
@@ -281,7 +242,7 @@ def _pie(share: pd.Series, name: str) -> str:
 
 
 def figures() -> list:
-    """Write the five figures of the data section and return their paths."""
+    """Write the five panels of Figures 1 to 3 and return their paths."""
     shares = genre_shares()
     counts = genre_count_shares()
     inner, outer = region_country_shares()

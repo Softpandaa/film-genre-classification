@@ -1,9 +1,4 @@
-"""The from-scratch CNN of section 3, with decade indicators.
-
-Twelve convolutional layers on the raw (345, 230, 3) poster, with six decade
-indicators concatenated to the flattened features. Trained on three genres at a
-time, balanced, on the train half of the shared split.
-"""
+"""The scratch CNN of Section 3 with decade indicators, drawn in Figure 14."""
 
 import numpy as np
 import pandas as pd
