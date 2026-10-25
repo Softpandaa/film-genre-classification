@@ -1,10 +1,10 @@
 # A Comparison of Neural Architectures for Movie Poster Genre Classification
 
-A movie poster is the first visual contact a viewer has with a film, and it signals genre before any other information reaches the audience. We measure how far that signal survives as a machine-readable one, and at what cost. Three regimes are compared, a convolutional network, four ImageNet backbones transferred to posters, and a vision-language model, against two backbones built for cheap inference, EfficientNetV2 and Fast-ViT. 
+A movie poster is the first visual contact a viewer has with a film, and it signals genre before any other information reaches the audience. We measure how far that signal survives as a machine-readable one, and at what cost. Three regimes are compared, a convolutional network, four ImageNet backbones and YOLOv8 transferred to posters, and a vision-language model, against two backbones built for cheap inference, EfficientNetV2 and Fast-ViT. 
 
 ## Findings
 
-We found that the classifier draws on the whole poster rather than its center, tolerates rotation and relies mainly on color for edge detection. Poster design changes measurably across decades, and supplying the decade as an indicator raises the accuracy by about 4%. ResNets deliver the strongest results, reaching 54.5% accuracy on the 19-genre task and 69.7% on the simplified 3-genre task.
+We find that the classifier draws on the whole poster rather than its center, tolerates rotation and is largely indifferent to color. Poster design changes measurably across decades, and supplying the decade as an indicator raises the accuracy by about 4%. ResNets deliver the strongest results, reaching 54.5% accuracy on the 19-genre task and 69.7% on the simplified 3-genre task.
 
 ## Layout
 
