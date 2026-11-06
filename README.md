@@ -1,16 +1,18 @@
 # A Comparison of Neural Architectures for Movie Poster Genre Classification
 
-A movie poster is the first visual contact a viewer has with a film, and it signals genre before any other information reaches the audience. We measure how far that signal survives as a machine-readable one, and at what cost. Three regimes are compared, a convolutional network, four ImageNet backbones and YOLOv8 transferred to posters, and a vision-language model, against two backbones built for cheap inference, EfficientNetV2 and Fast-ViT. 
+This study examines whether the genre of a film can be recovered from its poster alone, and at what computational cost. A convolutional network trained from scratch, four ImageNet backbones and YOLOv8 adapted by transfer learning, and CLIP applied zero-shot are compared with two backbones built for efficient inference, EfficientNetV2 and FastViT.
 
 ## Findings
 
-We find that the classifier draws on the whole poster rather than its center, tolerates rotation and is largely indifferent to color. Poster design changes measurably across decades, and supplying the decade as an indicator raises the accuracy by about 4%. ResNets deliver the strongest results, reaching 54.5% accuracy on the 19-genre task and 69.7% on the simplified 3-genre task.
+The VGG16 classifier draws on the whole poster rather than its center, tolerates rotation and is largely indifferent to color. Poster design changes measurably across decades, and supplying the decade as an indicator raises the accuracy of the convolutional network by about 4%. ResNets attain the highest accuracy, 54.5% on the 19-genre task and 69.7% on the 3-genre task.
 
 ## Layout
 
-    data/        the frozen dataset, and the Kaggle download when present
-    src/         config.py, the shared modules, models/ one file per family
-    report.pdf   
+```
+data/        the frozen dataset, and the Kaggle download when present
+src/         config.py, the shared modules, models/ one file per family
+report.pdf
+```
 
 The report is distributed as a compiled PDF. Its typesetting source is not included.
 
@@ -30,7 +32,7 @@ count at four, which leaves 548,835 movies in the four tables committed to
 | `poster_sizes.csv.gz` | 557,539 | dimensions of every readable poster |
 | `cnn_genres.csv.gz` | 424,102 | post-1970 subset with release dates |
 
-The train and test split is positional over the row order of `encoded_genres.csv.gz`. To train or predict, the posters are needed. Download `posters.zip` and extract it so that images sit at `data/posters/<movie_id>.jpg`. 
+The train and test split is positional over the row order of `encoded_genres.csv.gz`. To train or predict, the posters are needed. Download `posters.zip` and extract it so that images sit at `data/posters/<movie_id>.jpg`.
 
 ## Reproducing
 
@@ -46,7 +48,7 @@ The train and test split is positional over the row order of `encoded_genres.csv
 | `vgg16` | the VGG16 classifier and its three inspection tests |
 | `torchvision` | AlexNet, ResNet-18 and ResNet-50 |
 | `yolo` | YOLOv8 under both label conventions |
-| `timm` | EfficientNetV2 and Fast-ViT |
+| `timm` | EfficientNetV2 and FastViT |
 | `clip` | the four zero-shot encoders |
 | `tables` | the two comparison tables and the per-genre AUROC |
 | `posters` | the decade poster strips |
